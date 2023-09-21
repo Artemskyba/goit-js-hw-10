@@ -1,5 +1,6 @@
 import axios from 'axios';
 import Notiflix from 'notiflix';
+import SlimSelect from 'slim-select';
 
 axios.defaults.headers.common['x-api-key'] =
   'live_KtW5wiUT0oWdCvrl2T4ASvtjwmmaA84BRAFCXJImumxTTTsDsQYclKdAfvQGFJGE';
@@ -60,12 +61,19 @@ function renderCatCardMarkup(catInfo) {
 }
 
 function errorMessage() {
+  loaderEl.classList.add('visually-hidden');
   Notiflix.Notify.failure(
-    'Oops! Something went wrong! Try reloading the page!'
+    'Oops! Something went wrong! Try reloading the page!',
+    {
+      position: 'center-center',
+      timeout: 100000,
+      width: '500px',
+      fontSize: '25px',
+      borderRadius: '35px',
+      backOverlay: true,
+    }
   );
 }
 
-//error options
 //Замість select.breed-select можеш використовувати будь-яку бібліотеку з красивими селектом, наприклад https://slimselectjs.com/
-//Замість p.loader можеш використовувати будь-яку бібліотеку з красивими CSS-завантажувачами, наприклад https://cssloaders.github.io/
 //catCard styles
