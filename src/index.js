@@ -1,9 +1,6 @@
-import axios from 'axios';
 import Notiflix from 'notiflix';
 import SlimSelect from 'slim-select';
-
-axios.defaults.headers.common['x-api-key'] =
-  'live_KtW5wiUT0oWdCvrl2T4ASvtjwmmaA84BRAFCXJImumxTTTsDsQYclKdAfvQGFJGE';
+import '../node_modules/slim-select/dist/slimselect.css';
 
 import { fechCatsBreeds } from './cat-api';
 import { fetchCatInfo } from './cat-api';
@@ -12,7 +9,13 @@ const breedSelectEl = document.querySelector('.breed-select');
 const catInfoEl = document.querySelector('.cat-info');
 const loaderEl = document.querySelector('.loader');
 
-breedSelectEl.addEventListener('change', onSelectField);
+const slimSelect = new SlimSelect({
+  select: breedSelectEl,
+  settings: {
+    placeholderText: 'Select a cat breed',
+    searchPlaceholder: 'Select a cat breed',
+  },
+});
 
 fechCatsBreeds()
   .then(breeds => renderBreedSelect(breeds))
@@ -21,15 +24,16 @@ fechCatsBreeds()
   });
 
 function renderBreedSelect(breeds) {
-  const breedSelectMarkup = breeds
-    .map(({ id, name }) => {
-      return `<option value="${id}">${name}</option>`;
-    })
-    .join('');
-  breedSelectEl.innerHTML = breedSelectMarkup;
+  const breedsData = breeds.map(({ id, name }) => {
+    return { text: name, value: id };
+  });
+  breedsData.unshift({ text: '', placeholder: true });
+  slimSelect.setData(breedsData);
   breedSelectEl.classList.remove('visually-hidden');
   loaderEl.classList.add('visually-hidden');
 }
+
+breedSelectEl.addEventListener('change', onSelectField);
 
 function onSelectField() {
   loaderEl.classList.remove('visually-hidden');
@@ -74,6 +78,3 @@ function errorMessage() {
     }
   );
 }
-
-//Замість select.breed-select можеш використовувати будь-яку бібліотеку з красивими селектом, наприклад https://slimselectjs.com/
-//catCard styles

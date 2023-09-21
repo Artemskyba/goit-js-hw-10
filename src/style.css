@@ -11,9 +11,30 @@
   overflow: hidden;
 }
 
-.cat-img {
-  max-width: 300px;
+.wrapper {
+  max-width: 250px;
+  margin-bottom: 10px;
 }
+
+.cat-img {
+  max-width: 400px;
+}
+
+.cat-breed {
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.cat-description {
+  max-width: 450px;
+  font-size: 18px;
+}
+
+.cat-temperament {
+  max-width: 450px;
+  font-size: 18px;
+}
+
 .loader {
   color: #000000;
   font-size: 45px;
