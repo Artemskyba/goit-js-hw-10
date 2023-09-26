@@ -16,7 +16,11 @@ export function fetchCatInfo(catId) {
   return axios
     .get(`https://api.thecatapi.com/v1/images/search?breed_ids=${catId}`)
     .then(response => {
-      if (response.status < 200 || response.status >= 300) {
+      if (
+        response.status < 200 ||
+        response.status >= 300 ||
+        response.data.length === 0
+      ) {
         throw new Error(response.status);
       }
       return response.data;
