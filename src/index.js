@@ -2,8 +2,7 @@ import Notiflix from 'notiflix';
 import SlimSelect from 'slim-select';
 import '../node_modules/slim-select/dist/slimselect.css';
 
-import { fechCatsBreeds } from './cat-api';
-import { fetchCatInfo } from './cat-api';
+import { fechCatsBreeds, fetchCatInfo } from './cat-api';
 
 const breedSelectEl = document.querySelector('.breed-select');
 const catInfoEl = document.querySelector('.cat-info');
@@ -19,9 +18,7 @@ const slimSelect = new SlimSelect({
 
 fechCatsBreeds()
   .then(breeds => renderBreedSelect(breeds))
-  .catch(error => {
-    errorMessage(error);
-  });
+  .catch(handleFetchError);
 
 function renderBreedSelect(breeds) {
   const breedsData = breeds.map(({ id, name }) => {
@@ -39,10 +36,17 @@ function onSelectField() {
   loaderEl.classList.remove('visually-hidden');
   catInfoEl.classList.add('visually-hidden');
   fetchCatInfo(this.value)
-    .then(catInfo => renderCatCardMarkup(catInfo))
-    .catch(error => {
-      errorMessage();
-    });
+    .then(catInfo => {
+      if (catInfo.length === 0) {
+        getErrorMessage(noCatInfoMessage, noCatDelay);
+      }
+      renderCatCardMarkup(catInfo);
+    })
+    .catch(handleFetchError);
+}
+
+function handleFetchError(error) {
+  getErrorMessage(errorMessage, errorDelay);
 }
 
 function renderCatCardMarkup(catInfo) {
@@ -64,17 +68,25 @@ function renderCatCardMarkup(catInfo) {
   catInfoEl.classList.remove('visually-hidden');
 }
 
-function errorMessage() {
+const errorMessageData = {
+  errorMessage: 'Oops! Something went wrong! Try reloading the page!',
+  noCatInfoMessage:
+    "We don't have information on this breed, please choose another one",
+  errorDelay: 100000,
+  noCatDelay: 1000,
+};
+
+const { errorMessage, noCatInfoMessage, errorDelay, noCatDelay } =
+  errorMessageData;
+
+function getErrorMessage(message, timeout) {
   loaderEl.classList.add('visually-hidden');
-  Notiflix.Notify.failure(
-    'Oops! Something went wrong! Try reloading the page!',
-    {
-      position: 'center-center',
-      timeout: 100000,
-      width: '500px',
-      fontSize: '25px',
-      borderRadius: '35px',
-      backOverlay: true,
-    }
-  );
+  Notiflix.Notify.failure(message, {
+    position: 'center-center',
+    timeout: timeout,
+    width: '500px',
+    fontSize: '25px',
+    borderRadius: '35px',
+    backOverlay: true,
+  });
 }
